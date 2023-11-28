@@ -1,8 +1,10 @@
+DROP DATABASE if exists farmERPSystem;
+Create DataBase farmERPSystem;
 Use farmERPSystem;
 
 -- Workers Table
 CREATE TABLE IF NOT EXISTS Workers (
-    WorkerID VARCHAR(255) PRIMARY KEY,
+    WorkerID INT PRIMARY KEY,
     FirstName VARCHAR(255),
     LastName VARCHAR(255),
     Address VARCHAR(255),
@@ -12,10 +14,10 @@ CREATE TABLE IF NOT EXISTS Workers (
 
 -- Livestock Table
 CREATE TABLE IF NOT EXISTS Livestock (
-    LivestockID VARCHAR(255) PRIMARY KEY,
+    LivestockID INT PRIMARY KEY,
     AnimalType VARCHAR(255),
     Breed VARCHAR(255),
-    QuantityAvailable DOUBLE,
+    QuantityAvailable INT,
     Unit_price DOUBLE,
     DateOfBirth DATETIME,
     PurchaseDate DATETIME,
@@ -24,10 +26,9 @@ CREATE TABLE IF NOT EXISTS Livestock (
 
 -- Crops Table
 CREATE TABLE IF NOT EXISTS Crops (
-    CropID VARCHAR(255) PRIMARY KEY,
+    CropID INT PRIMARY KEY,
     CropName VARCHAR(255),
-    CropType ENUM('TypeA', 'TypeB', 'TypeC'),
-    QuantityAvailable DOUBLE,
+    QuantityAvailable INT,
     Unit_price DOUBLE,
     PlantingDate DATETIME,
     HarvestDate DATETIME,
@@ -40,9 +41,9 @@ CREATE TABLE IF NOT EXISTS Crops (
 -- Crop_Plot Table
 CREATE TABLE IF NOT EXISTS Crop_Plot (
     PlotID VARCHAR(255) PRIMARY KEY,
-    CropID VARCHAR(255),
+    CropID INT,
     SoilType ENUM('Type1', 'Type2', 'Type3'),
-    Size VARCHAR(255),
+    Size DOUBLE,
     Location VARCHAR(255),
     Notes TEXT,
     FOREIGN KEY (CropID) REFERENCES Crops(CropID)
@@ -50,9 +51,9 @@ CREATE TABLE IF NOT EXISTS Crop_Plot (
 
 -- Equipment Table
 CREATE TABLE IF NOT EXISTS Equipment (
-    EquipmentID VARCHAR(255) PRIMARY KEY,
+    EquipmentID INT PRIMARY KEY,
     EquipmentName VARCHAR(255),
-    QuantityAvailable DOUBLE,
+    QuantityAvailable INT,
     PurchaseDate DATETIME,
     WarrantyExpirationDate DATETIME,
     MaintenanceDate DATETIME
@@ -60,16 +61,16 @@ CREATE TABLE IF NOT EXISTS Equipment (
 
 -- Livestock_Pens Table
 CREATE TABLE IF NOT EXISTS Livestock_Pens (
-    PenID VARCHAR(255) PRIMARY KEY,
-    LivestockID VARCHAR(255),
-    Size VARCHAR(255),
+    PenID INT PRIMARY KEY,
+    LivestockID INT,
+    Size DOUBLE,
     Location VARCHAR(255),
     FOREIGN KEY (LivestockID) REFERENCES Livestock(LivestockID)
 );
 
 -- Customer Table
 CREATE TABLE IF NOT EXISTS Customer (
-    CustomerID VARCHAR(255) PRIMARY KEY,
+    CustomerID INT PRIMARY KEY,
     FirstName VARCHAR(255),
     LastName VARCHAR(255),
     ContactNumber VARCHAR(255),
@@ -79,7 +80,7 @@ CREATE TABLE IF NOT EXISTS Customer (
 -- Orders Table
 CREATE TABLE IF NOT EXISTS Orders (
     OrderID INT PRIMARY KEY AUTO_INCREMENT,
-    CustomerID VARCHAR(255),
+    CustomerID INT,
     Date DATETIME,
     Total_amount DOUBLE,
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
@@ -89,20 +90,21 @@ CREATE TABLE IF NOT EXISTS Orders (
 CREATE TABLE IF NOT EXISTS OrderItems (
     ItemID VARCHAR(255) PRIMARY KEY,
     OrderID INT,
-    ProduceID VARCHAR(255),
-    LivestockID VARCHAR(255),
-    Quantity DOUBLE,
-    Amount DOUBLE,
+    CropID INT,
+    LivestockID INT,
+    QuantityOfCrop INT,
+    QuantityOfLivestock INT,
     FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
-    FOREIGN KEY (ProduceID) REFERENCES Crops(CropID),
+    FOREIGN KEY (CropID) REFERENCES Crops(CropID),
     FOREIGN KEY (LivestockID) REFERENCES Livestock(LivestockID)
 );
 
 -- Tools_In_Use Table
 CREATE TABLE IF NOT EXISTS Tools_In_Use (
     ToolUseID VARCHAR(255) PRIMARY KEY,
-    WorkerID VARCHAR(255),
-    EquipmentID VARCHAR(255),
+    WorkerID INT,
+    EquipmentID INT,
+    QuantityAcquired INT,
     TimeAcquired DATETIME,
     TimeReturned DATETIME,
     FOREIGN KEY (WorkerID) REFERENCES Workers(WorkerID),
@@ -112,7 +114,7 @@ CREATE TABLE IF NOT EXISTS Tools_In_Use (
 -- Expenses_Record Table
 CREATE TABLE IF NOT EXISTS Expenses_Record (
     ExpenseID VARCHAR(255) PRIMARY KEY,
-    ExpenseCategoryID ENUM('Category1', 'Category2', 'Category3'),
+    ExpenseCategory ENUM('Category1', 'Category2', 'Category3'),
     Amount DOUBLE,
     Notes TEXT
 );
@@ -120,9 +122,9 @@ CREATE TABLE IF NOT EXISTS Expenses_Record (
 -- Transactions Table
 CREATE TABLE IF NOT EXISTS Transactions (
     TransactionID VARCHAR(255) PRIMARY KEY,
-    AuthID VARCHAR(255),
+    AuthID INT NOT NULL,
     OrderID INT,
-    Worker_payID VARCHAR(255),
+    Worker_payID INT,
     ExpenseID VARCHAR(255),
     TransactionType VARCHAR(255),
     Amount DOUBLE,
@@ -136,9 +138,9 @@ CREATE TABLE IF NOT EXISTS Transactions (
 
 -- Works_On Table
 CREATE TABLE IF NOT EXISTS Works_On (
-    WorkerID VARCHAR(255),
+    WorkerID INT,
     PlotID VARCHAR(255),
-    PenID VARCHAR(255),
+    PenID INT,
     PRIMARY KEY (WorkerID, PlotID, PenID),
     FOREIGN KEY (WorkerID) REFERENCES Workers(WorkerID),
     FOREIGN KEY (PlotID) REFERENCES Crop_Plot(PlotID),

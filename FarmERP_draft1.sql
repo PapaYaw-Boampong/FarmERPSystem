@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS Crops (
 CREATE TABLE IF NOT EXISTS Crop_Plot (
     PlotID VARCHAR(255) PRIMARY KEY,
     CropID INT,
-    SoilType ENUM('Type1', 'Type2', 'Type3'),
+    SoilType ENUM('Sandy', 'Clay', 'Loamy'),
     Size DOUBLE,
     Location VARCHAR(255),
     Notes TEXT,
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS Tools_In_Use (
 -- Expenses_Record Table
 CREATE TABLE IF NOT EXISTS Expenses_Record (
     ExpenseID VARCHAR(255) PRIMARY KEY,
-    ExpenseCategory ENUM('Category1', 'Category2', 'Category3'),
+    ExpenseCategory ENUM('Vechicle Expenses', 'Fertilier Expenses', 'Chemicals Expenses', 'Rent'),
     Amount DOUBLE,
     Notes TEXT
 );

@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS Workers (
     FirstName VARCHAR(255) NOT NULL,
     LastName VARCHAR(255) NOT NULL,
     Address VARCHAR(255) NOT NULL,
-    Position ENUM('FarmWorker', 'Supervisor', 'Manager', 'Other') NOT NULL,
+    Position ENUM('FarmWorker', 'Supervisor', 'Manager', 'Other')  CHECK (Position IN ('FarmWorker', 'Supervisor', 'Manager', 'Other')) NOT NULL,
     Salary DOUBLE
 );
 
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS Livestock (
     Breed VARCHAR(255) NOT NULL,
     QuantityAvailable INT NOT NULL,
     Unit_price DOUBLE,
-    DateOfBirth DATETIME,
+    DateOfBirth DATETIME ,
     PurchaseDate DATETIME,
     AnimalNotes TEXT
 );
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS Livestock_Pens (
     LivestockID INT,
     Size DOUBLE CHECK (Size >= 0) NOT NULL,
     Location VARCHAR(255) NOT NULL,
-    FOREIGN KEY (LivestockID) REFERENCES Livestock(LivestockID)
+    FOREIGN KEY (LivestockID) REFERENCES Livestock(LivestockID) ON DELETE CASCADE
 );
 
 -- Customer Table
@@ -94,9 +94,9 @@ CREATE TABLE IF NOT EXISTS OrderItems (
     LivestockID INT,
     QuantityOfCrop INT CHECK (QuantityOfCrop >= 0),
     QuantityOfLivestock INT CHECK (QuantityOfLivestock >= 0),
-    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
-    FOREIGN KEY (CropID) REFERENCES Crops(CropID),
-    FOREIGN KEY (LivestockID) REFERENCES Livestock(LivestockID)
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID) ON DELETE CASCADE,
+    FOREIGN KEY (CropID) REFERENCES Crops(CropID) ON DELETE CASCADE,
+    FOREIGN KEY (LivestockID) REFERENCES Livestock(LivestockID) ON DELETE CASCADE
 );
 
 -- Tools_In_Use Table
@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS Works_On (
     PlotID VARCHAR(255),
     PenID INT,
     PRIMARY KEY (WorkerID, PlotID, PenID),
-    FOREIGN KEY (WorkerID) REFERENCES Workers(WorkerID),
-    FOREIGN KEY (PlotID) REFERENCES Crop_Plot(PlotID),
-    FOREIGN KEY (PenID) REFERENCES Livestock_Pens(PenID)
+    FOREIGN KEY (WorkerID) REFERENCES Workers(WorkerID) ON DELETE CASCADE,
+    FOREIGN KEY (PlotID) REFERENCES Crop_Plot(PlotID) ON DELETE CASCADE,
+    FOREIGN KEY (PenID) REFERENCES Livestock_Pens(PenID) ON DELETE CASCADE
 );

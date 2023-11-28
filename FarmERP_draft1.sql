@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS Crop_Plot (
     PlotID VARCHAR(255) PRIMARY KEY,
     CropID INT,
     SoilType ENUM('Sandy', 'Clay', 'Loamy') NOT NULL,
-    Size DOUBLE NOT NULL,
+    Size DOUBLE CHECK (Size >= 0) NOT NULL,
     Location VARCHAR(255) NOT NULL,
     Notes TEXT,
     FOREIGN KEY (CropID) REFERENCES Crops(CropID)
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS Crop_Plot (
 CREATE TABLE IF NOT EXISTS Equipment (
     EquipmentID INT PRIMARY KEY,
     EquipmentName VARCHAR(255) NOT NULL,
-    QuantityAvailable INT NOT NULL,
+    QuantityAvailable INT CHECK (QuantityAvailable >= 0) NOT NULL,
     PurchaseDate DATETIME NOT NULL,
     WarrantyExpirationDate DATETIME,
     MaintenanceDate DATETIME
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS Equipment (
 CREATE TABLE IF NOT EXISTS Livestock_Pens (
     PenID INT PRIMARY KEY,
     LivestockID INT,
-    Size DOUBLE NOT NULL,
+    Size DOUBLE CHECK (Size >= 0) NOT NULL,
     Location VARCHAR(255) NOT NULL,
     FOREIGN KEY (LivestockID) REFERENCES Livestock(LivestockID)
 );
@@ -73,8 +73,8 @@ CREATE TABLE IF NOT EXISTS Customer (
     CustomerID INT PRIMARY KEY,
     FirstName VARCHAR(255) NOT NULL,
     LastName VARCHAR(255) NOT NULL,
-    ContactNumber VARCHAR(255) NOT NULL,
-    Email VARCHAR(255)
+    ContactNumber VARCHAR(255) UNIQUE NOT NULL,
+    Email VARCHAR(255) UNIQUE
 );
 
 -- Orders Table
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS Orders (
     OrderID INT PRIMARY KEY AUTO_INCREMENT,
     CustomerID INT NOT NULL,
     Date DATETIME NOT NULL,
-    Total_amount DOUBLE,
+    Total_amount DOUBLE CHECK (Total_amount >= 0),
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
 
@@ -92,8 +92,8 @@ CREATE TABLE IF NOT EXISTS OrderItems (
     OrderID INT NOT NULL,
     CropID INT,
     LivestockID INT,
-    QuantityOfCrop INT,
-    QuantityOfLivestock INT,
+    QuantityOfCrop INT CHECK (QuantityOfCrop >= 0),
+    QuantityOfLivestock INT CHECK (QuantityOfLivestock >= 0),
     FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
     FOREIGN KEY (CropID) REFERENCES Crops(CropID),
     FOREIGN KEY (LivestockID) REFERENCES Livestock(LivestockID)
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS Tools_In_Use (
     ToolUseID VARCHAR(255) PRIMARY KEY,
     WorkerID INT NOT NULL,
     EquipmentID INT NOT NULL,
-    QuantityAcquired INT NOT NULL,
+    QuantityAcquired INT CHECK (QuantityAcquired >= 0) NOT NULL,
     TimeAcquired DATETIME NOT NULL,
     TimeReturned DATETIME NOT NULL,
     FOREIGN KEY (WorkerID) REFERENCES Workers(WorkerID),
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS Tools_In_Use (
 CREATE TABLE IF NOT EXISTS Expenses_Record (
     ExpenseID VARCHAR(255) PRIMARY KEY,
     ExpenseCategory ENUM('Vechicle Expenses', 'Fertilier Expenses', 'Chemicals Expenses', 'Rent', 'Other') NOT NULL,
-    Amount DOUBLE NOT NULL,
+    Amount DOUBLE CHECK (Amount >= 0) NOT NULL,
     Notes TEXT
 );
 
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS Transactions (
     Worker_payID INT NOT NULL,
     ExpenseID VARCHAR(255),
     TransactionType ENUM('External Transaction','Cash Transaction', 'Internal Transaction','Non-Cash Transaction', 'Other') NOT NULL,
-    Amount DOUBLE NOT NULL,
+    Amount DOUBLE CHECK (Amount >= 0) NOT NULL,
     Reciept_photo BLOB NOT NULL,
     TransactionDate DATETIME NOT NULL,
     FOREIGN KEY (AuthID) REFERENCES Workers(WorkerID),

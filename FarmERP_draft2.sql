@@ -379,6 +379,15 @@ JOIN Crop_Plot cp ON c.CropID = cp.CropID
 JOIN Produce p ON c.ProduceID = p.ProduceID;
 
 -- Views for all the strong entities
+CREATE VIEW People_VIEW AS
+SELECT PersonID, FirstName, LastName, Address, Email
+FROM Person;
+
+
+CREATE VIEW Produce_VIEW AS
+SELECT ProduceID, ProductName, QuantityAvailable, Unit_price, PurchaseDate, Notes
+FROM Produce;
+
 CREATE VIEW Workers_VIEW AS
 SELECT w.WorkerID, p.FirstName, p.LastName, p.Address, w.Position, w.Salary
 FROM Workers w

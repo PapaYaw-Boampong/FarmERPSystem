@@ -146,3 +146,192 @@ CREATE TABLE IF NOT EXISTS Works_On (
     FOREIGN KEY (PlotID) REFERENCES Crop_Plot(PlotID) ON DELETE CASCADE,
     FOREIGN KEY (PenID) REFERENCES Livestock_Pens(PenID) ON DELETE CASCADE
 );
+
+-- Inserting Workers
+INSERT INTO Workers (WorkerID, FirstName, LastName, Address, Position, Salary) VALUES
+(1, 'John', 'Doe', '123 Main St', 'FarmWorker', 30000),
+(2, 'Jane', 'Smith', '456 Oak St', 'Supervisor', 45000),
+(3, 'Mike', 'Johnson', '789 Pine St', 'Manager', 60000);
+
+-- Inserting Livestock
+INSERT INTO Livestock (LivestockID, AnimalType, Breed, QuantityAvailable, Unit_price, DateOfBirth, PurchaseDate, AnimalNotes) VALUES
+(1, 'Cow', 'Holstein', 10, 800, '2022-01-01', '2022-03-15', 'Black and white markings'),
+(2, 'Chicken', 'Rhode Island Red', 50, 20, '2022-02-15', '2022-04-01', 'Free-range birds');
+
+-- Inserting Crops
+INSERT INTO Crops (CropID, CropName, QuantityAvailable, Unit_price, PlantingDate, HarvestDate, QuantityPlanted, QuantityHarvested, CropStatus, PlantNotes) VALUES
+(1, 'Tomatoes', 100, 2, '2022-04-01', '2022-06-15', 80, 0, 'Growing', 'Planted in greenhouse'),
+(2, 'Wheat', 200, 1.5, '2022-05-01', '2022-07-30', 150, 0, 'Growing', 'Field near the barn');
+
+-- Inserting Crop_Plot
+INSERT INTO Crop_Plot (PlotID, CropID, SoilType, Size, Location, Notes) VALUES
+('A1', 1, 'Loamy', 10, 'Greenhouse', 'Plot for tomatoes'),
+('B2', 2, 'Sandy', 20, 'Field', 'Large wheat field');
+
+-- Inserting Equipment
+INSERT INTO Equipment (EquipmentID, EquipmentName, QuantityAvailable, PurchaseDate, WarrantyExpirationDate, MaintenanceDate) VALUES
+(1, 'Tractor', 2, '2022-01-10', '2025-01-10', '2022-06-01'),
+(2, 'Plow', 1, '2022-02-05', '2024-02-05', '2022-08-15');
+
+-- Inserting Livestock_Pens
+INSERT INTO Livestock_Pens (PenID, LivestockID, Size, Location) VALUES
+(1, 1, 100, 'Barn A'),
+(2, 2, 50, 'Chicken Coop');
+
+-- Inserting Customer
+INSERT INTO Customer (CustomerID, FirstName, LastName, ContactNumber, Email) VALUES
+(1, 'Alice', 'Johnson', '555-1234', 'alice@email.com'),
+(2, 'Bob', 'Smith', '555-5678', 'bob@email.com');
+
+-- Inserting Orders
+INSERT INTO Orders (OrderID, CustomerID, Date, Total_amount) VALUES
+(1, 1, '2022-07-01', 50),
+(2, 2, '2022-08-15', 30);
+
+-- Inserting OrderItems
+INSERT INTO OrderItems (ItemID, OrderID, CropID, LivestockID, QuantityOfCrop, QuantityOfLivestock) VALUES
+('A001', 1, 1, NULL, 5, NULL),
+('B002', 2, NULL, 2, NULL, 10);
+
+-- Inserting Tools_In_Use
+INSERT INTO Tools_In_Use (ToolUseID, WorkerID, EquipmentID, QuantityAcquired, TimeAcquired, TimeReturned) VALUES
+('T001', 1, 1, 1, '2022-05-01', '2022-05-02'),
+('T002', 2, 2, 1, '2022-06-01', '2022-06-01');
+
+-- Inserting Expenses_Record
+INSERT INTO Expenses_Record (ExpenseID, ExpenseCategory, Amount, Notes) VALUES
+('E001', 'Vehicle Expenses', 200, 'Vehicle Expenses'),
+('E002', 'Rent', 500, 'Monthly rent for the farm');
+
+-- Inserting Transactions
+INSERT INTO Transactions (TransactionID, AuthID, OrderID, Worker_payID, ExpenseID, TransactionType, Amount, Reciept_photo, TransactionDate) VALUES
+('TR001', 1, 1, NULL, 'E001', 'Cash Transaction', 50, NULL, '2022-07-05'),
+('TR002', 2, 2, NULL, 'E002', 'Non-Cash Transaction', 30, NULL, '2022-08-20');
+
+-- Inserting Works_On
+-- INSERT INTO Works_On (WorkerID, PlotID, PenID) VALUES
+-- (1, 'A1', NULL),
+-- (2, NULL, 1);
+
+
+-- View to show workers and their assigned tools
+CREATE VIEW WorkerTools AS
+SELECT w.FirstName, w.LastName, t.ToolUseID, e.EquipmentName
+FROM Workers w
+JOIN Tools_In_Use t ON w.WorkerID = t.WorkerID
+JOIN Equipment e ON t.EquipmentID = e.EquipmentID;
+
+-- View to show livestock and their pens 
+CREATE VIEW LivestockPens AS
+SELECT l.AnimalType, l.Breed, lp.PenID, lp.Location
+FROM Livestock l
+JOIN Livestock_Pens lp ON l.LivestockID = lp.LivestockID;
+
+
+-- View to show crops and the plots they are planted in
+CREATE VIEW CropPlots AS
+SELECT c.CropName, cp.PlotID, cp.Location
+FROM Crops c
+JOIN Crop_Plot cp ON c.CropID = cp.CropID;
+
+
+-- Views for all the strong entity
+CREATE VIEW Workers_VIEW AS
+SELECT WorkerID, FirstName, LastName, Address, Position, Salary
+FROM Workers;
+
+CREATE VIEW Livestock_VIEW AS
+SELECT LivestockID, AnimalType, Breed, QuantityAvailable, Unit_price, DateOfBirth, PurchaseDate, AnimalNotes
+FROM Livestock;
+
+CREATE VIEW Crops_VIEW AS
+SELECT CropID, CropName, QuantityAvailable, Unit_price, PlantingDate, HarvestDate, QuantityPlanted, QuantityHarvested, CropStatus, PlantNotes
+FROM Crops;
+
+CREATE VIEW Equipment_VIEW AS
+SELECT EquipmentID, EquipmentName, QuantityAvailable, PurchaseDate, WarrantyExpirationDate, MaintenanceDate 
+FROM Equipment;
+
+CREATE VIEW Customers_VIEW AS
+SELECT CustomerID,FirstName,LastName,ContactNumber,Email
+FROM Customer;
+
+CREATE VIEW Orders_VIEW AS
+SELECT OrderID,CustomerID,Date,Total_amount
+FROM Orders;
+
+CREATE VIEW Expenses_VIEW AS
+SELECT ExpenseID,ExpenseCategory,Amount,Notes
+FROM Expenses_Record;
+
+
+
+-- Update the salary of a worker
+UPDATE Workers
+SET Salary = 35000
+WHERE WorkerID = 1;
+
+-- Update the status of a crop to 'Harvested'
+UPDATE Crops
+SET CropStatus = 'Harvested', QuantityHarvested = 80
+WHERE CropID = 1;
+
+-- Update the maintenance date of equipment
+UPDATE Equipment
+SET MaintenanceDate = '2022-09-10'
+WHERE EquipmentID = 1;
+
+-- View total expenses by category
+SELECT ExpenseCategory, SUM(Amount) AS TotalExpense
+FROM Expenses_Record
+GROUP BY ExpenseCategory;
+
+-- View transactions by transaction type
+SELECT TransactionType, COUNT(TransactionID) AS TransactionCount
+FROM Transactions
+GROUP BY TransactionType;
+
+-- Display transactions made in July 2022 the transaction happened
+
+SELECT *
+FROM Transactions
+WHERE MONTH(TransactionDate) = 07
+AND YEAR(TransactionDate) = 2022;
+
+-- Display the number of Workers that are FarmWorker
+
+SELECT COUNT(Position) 
+FROM Workers 
+WHERE Position = 'FarmWorker';
+
+-- Display all Worker that are Supervisor
+
+SELECT * 
+FROM Workers 
+WHERE Position = 'Supervisor'; 
+
+-- Display all Worker
+
+SELECT * 
+FROM Workers;
+
+-- Display what each worker is working on 
+
+SELECT * 
+FROM Works_On; 
+
+-- Display the Crops harvested that where harvested in January of 2023 
+
+SELECT *
+FROM Crops
+WHERE CropStatus = 'Harvested'
+AND MONTH(HarvestDate) = 01
+AND YEAR(HarvestDate) = 2023;
+
+-- Display the Crops that are currently growing and were planted in Apirl of 2022
+
+SELECT *
+FROM Crops
+WHERE CropStatus = 'Growing'
+AND MONTH(PlantingDate) = 04
+AND YEAR(PlantingDate) = 2022;

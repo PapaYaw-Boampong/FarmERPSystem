@@ -82,9 +82,3 @@ The database supports the following functionalities:
 
 The database supports various queries and views to retrieve relevant information. Refer to the [queries](#) and [views](#) sections for examples and details.
 
-
-## License
-
-This project is licensed under the Ashesi Class Of 2025 Database class.
-
-Remember to replace placeholders such as `your-username` and provide links to specific sections (e.g., database schema, queries, and views) if you have separate documents or sections for them. Additionally, ensure that your `LICENSE.md` and `CONTRIBUTING.md` files exist and contain appropriate information.
